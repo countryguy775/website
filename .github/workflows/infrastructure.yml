@@ -113,3 +113,24 @@ jobs:
                 $newcname = '${{needs.create-cdn.outputs.endpointName}}'
                 Get-AzDnsRecordSet -name ${{env.environ}} -RecordType CNAME -ZoneName ${{env.domainName}} -ResourceGroupName "core_services" | Add-AzDnsRecordConfig -Cname $newcname | Set-AzDnsRecordSet
             azPSVersion: "latest"
+
+    create-customdomain:
+        runs-on: ubuntu-latest
+        needs: [create-rg,create-cdn,deploy-dns]
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in with Azure
+          uses: azure/login@v2
+          with:
+            creds: ${{secrets.AZURE_CREDENTIALS}}
+
+        - name: Create Custom Domain
+          uses: azure/arm-deploy@v2
+          id: cdom
+          with:
+            scope: resourcegroup
+            resourceGroupName: ${{needs.create-rg.outputs.rgName}}
+            template: ./infrastructure/create_customdomain.json
+            parameters: profileName=${{needs.create-cdn.outputs.profileName}} appName=${{env.appName}} customHostName=${{needs.create-cdn.outputs.customDomainName}}

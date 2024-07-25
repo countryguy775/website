@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "profileName": {
+            "type": "string"
+        },
+        "appName": {
+            "type": "string"
+        },
+        "customHostName": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Cdn/profiles/endpoints/customDomains",
+            "apiVersion": "2021-06-01",
+            "name": "[concat(parameters('profileName'),'/',parameters('appName'),'/',parameters('customHostName'))]",
+            "properties": {
+                "hostName": "[replace(parameters('customHostName'),'-','.')]"
+            }
+        }
+    ]
+}
