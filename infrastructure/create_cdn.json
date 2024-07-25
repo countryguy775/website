@@ -18,8 +18,7 @@
     "variables": {
         "profileName": "[concat(parameters('appName'), '-', parameters('environment'), '-cdn')]",
         "originGroupName": "[concat(parameters('environment'), '-origin-group')]",
-        "customhostName": "[concat(parameters('environment'), '.', parameters('domainName'))]",
-        "originName": "[concat(parameters('environment'), '-origin')]"
+        "customhostName": "[concat(parameters('environment'), '.', parameters('domainName'))]"
     },
     "resources": [
         {
