@@ -25,7 +25,48 @@
             "sku": {
                 "name": "Standard_LRS",
                 "tier": "Standard"
+            },
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "allowSharedKeyAccess": true
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(variables('storageName'), '/default')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": [
+                        {
+                            "allowedOrigins": [
+                                "http://localhost:5173"
+                            ],
+                            "allowedMethods": [
+                                "DELETE",
+                                "GET",
+                                "POST",
+                                "PUT"
+                            ],
+                            "maxAgeInSeconds": 100,
+                            "exposedHeaders": [
+                                "*"
+                            ],
+                            "allowedHeaders": [
+                                "*"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+            ]
         }
     ],
     "outputs": {
