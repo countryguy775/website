@@ -1,0 +1,81 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string"
+        },
+        "DnsZone": {
+            "type": "string"
+        },
+        "storageWebEndpoint": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "profileName": "[concat(parameters('appName'), '-', parameters('environment'), '-cdn')]",
+        "originGroupName": "[concat(parameters('environment'), '-origin-group')]",
+        "customhostName": "[concat(parameters('environment'), '.', parameters('domainName'))]",
+        "originName": "[concat(parameters('environment'), '-origin')]",
+        "routeName": "[concat(parameters('environment'), '-route')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Cdn/profiles",
+            "apiVersion": "2021-06-01",
+            "name": "[variables('profileName')]",
+            "location": "Global",
+            "tags": {
+                "Environment": "[parameters('environment')]"
+            },
+            "sku": {
+                "name": "Standard_Microsoft"
+            },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/Endpoints",
+            "apiVersion": "2021-06-01",
+            "name": "[concat(variables('profileName'), '/', parameters('appName'))]",
+            "location": "Global",
+            "tags": {
+                "Environment": "[parameters('environment')]"
+            },
+            "properties": {
+                "isHttpAllowed": false,
+                "originHostHeader": "[substring(parameters('storageWebEndpoint'), 8, sub(length(parameters('storageWebEndpoint')),9))]",
+                "origins": [
+                    {
+                        "name": "[replace(substring(parameters('storageWebEndpoint'),8,sub(length(parameters('storageWebEndpoint')),9)),'.','-')]",
+                        "properties": {
+                            "hostName": "[substring(parameters('storageWebEndpoint'), 8, sub(length(parameters('storageWebEndpoint')),9))]"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', variables('profileName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "profileName": {
+            "type": "string",
+            "value": "[variables('profileName')]"
+        },
+        "customDomainName": {
+            "type": "string",
+            "value": "[replace(variables('customhostName'),'.','-')]"
+        },
+        "endpointName": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Cdn/profiles/Endpoints', variables('profileName'), parameters('appName'))).hostName]"
+        }
+    }
+}

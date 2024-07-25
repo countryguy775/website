@@ -62,3 +62,27 @@ jobs:
             template: ./infrastructure/create_storage.json
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
+    create-cdn:
+        runs-on: ubuntu-latest
+        needs: [create-rg,create-storage]
+        outputs:
+            profileName: ${{steps.cdn.outputs.profileName}}
+            customDomainName: ${{steps.cdn.outputs.customDomainName}}
+            endpointName: ${{steps.cdn.outputs.endpointName}}
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in with Azure
+          uses: azure/login@v2
+          with:
+            creds: '${{secrets.AZURE_CREDENTIALS}}'
+
+        - name: Create CDN
+          uses: azure/arm-deploy@v2
+          id: cdn
+          with:
+            scope: resourcegroup
+            resourceGroupName: ${{needs.create-rg.outputs.rgName}}
+            template: ./create_cdn.json
+            parameters: appName=${{env.appName}} environment=${{env.environ}} DnsZone=${{env.DnsZone}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
