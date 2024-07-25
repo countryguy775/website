@@ -12,7 +12,7 @@ env:
     appName: familywebsite
     environ: dev
     domainName: 'thehodgesfamily.net'
-    
+
 jobs:
     create-rg:
         runs-on: ubuntu-latest
@@ -87,3 +87,29 @@ jobs:
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_cdn.json
             parameters: appName=${{env.appName}} environment=${{env.environ}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
+
+    deploy-dns:
+        runs-on: ubuntu-latest
+        needs: [create-rg,create-cdn]
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in with Azure
+          uses: azure/login@v2
+          with:
+            creds: ${{secrets.AZURE_CREDENTIALS}}
+            enable-AzPSSession: true
+
+        - name: Deploy DNS
+          uses: azure/powershell@v2
+          id: dns
+          with:
+            inlineScript: |
+                $ErrorActionPreference = 'Stop'
+                Set-AzContext -Subscription "2f9cc458-4951-43a4-8231-a7b3c75b5473"
+                $rs = Get-AzDnsRecordSet -Name ${{env.environ}} -RecordType CNAME -ZoneName ${{env.domainName}} -ResourceGroupName "core_services"
+                Remove-AzDnsRecordConfig -RecordSet $rs -Cname $rs.Records.cname | Set-AzDnsRecordSet
+                $newcname = '${{needs.create-cdn.outputs.endpointName}}'
+                Get-AzDnsRecordSet -name ${{env.environ}} -RecordType CNAME -ZoneName ${{env.domainName}} -ResourceGroupName "core_services" | Add-AzDnsRecordConfig -Cname $newcname | Set-AzDnsRecordSet
+            azPSVersion: "latest"
