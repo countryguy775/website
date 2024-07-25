@@ -1,0 +1,116 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string"
+        },
+        "tableName": {
+            "type": "string",
+            "defaultValue": "VisitCount"
+        },
+        "containerName": {
+            "type": "string",
+            "defaultValue": "Visits"
+        }
+    },
+    "variables": {
+        "fulldbName": "[concat(parameters('appName'), parameters('environment'), 'db')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2023-04-15",
+            "name": "[variables('fulldbName')]",
+            "tags": {
+                "Environment" : "[parameters('environment')]"
+            },
+            "location": "westus",
+            "kind": "GlobalDocumentDB",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "isZoneRedundant": false
+                    }
+                ],
+                "capabilities": [
+                    {
+                        "name": "EnableServerless"
+                    }
+                ],
+                "backupPolicy": {
+                    "type": "Continuous",
+                    "continuousModeProperties": {
+                        "tier": "Continuous7Days"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2023-04-15",
+            "name": "[concat(variables('fulldbName'), '/', parameters('tableName'))]",
+            "tags": {
+                "Environment" : "[parameters('environment')]"
+            },
+            "properties": {
+                "resource": {
+                    "id": "[parameters('tableName')]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2023-04-15",
+            "name": "[concat(variables('fulldbName'), '/', parameters('tableName'), '/', parameters('containerName'))]",
+            "tags": {
+                "Environment" : "[parameters('environment')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', variables('fulldbName'), parameters('tableName'))]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('containerName')]",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/partitionKey"
+                        ],
+                        "kind": "Hash",
+                        "version": 2
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                }
+            }
+        }
+    ]
+}
