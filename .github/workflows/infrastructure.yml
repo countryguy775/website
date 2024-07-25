@@ -9,7 +9,7 @@ on:
 
 env:
     location: eastus
-    appname: familywebsite
+    appName: familywebsite
     environ: dev
 
 jobs:
