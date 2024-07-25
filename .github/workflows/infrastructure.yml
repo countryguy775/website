@@ -11,7 +11,8 @@ env:
     location: eastus
     appName: familywebsite
     environ: dev
-
+    domainName: 'thehodgesfamily.net'
+    
 jobs:
     create-rg:
         runs-on: ubuntu-latest
@@ -84,5 +85,5 @@ jobs:
           with:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
-            template: ./create_cdn.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}} DnsZone=${{env.DnsZone}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
+            template: ./infrastructure/create_cdn.json
+            parameters: appName=${{env.appName}} environment=${{env.environ}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}

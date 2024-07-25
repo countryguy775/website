@@ -8,9 +8,6 @@
         "environment": {
             "type": "string"
         },
-        "DnsZone": {
-            "type": "string"
-        },
         "storageWebEndpoint": {
             "type": "string"
         },
