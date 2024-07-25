@@ -1,0 +1,13 @@
+name: Website Frontend Deployment
+
+on:
+    push:
+        branches: ["main"]
+        paths:
+            - 'frontend/**'
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:

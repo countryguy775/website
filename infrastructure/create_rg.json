@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appName": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "actualAppName": "[concat(parameters('appName'), '-', parameters('environment'))]",
+        "rgName": "[concat(parameters('appName'),'-', parameters('environment'), '-rg')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2022-09-01",
+            "name": "[variables('rgName')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Environment": "[parameters('environment')]"
+            }
+        }
+    ],
+    "outputs": {
+        "actualAppName": {
+            "type": "string",
+            "value": "[variables('actualAppName')]"
+        },
+        "rgName": {
+            "type": "string",
+            "value": "[variables('rgName')]"
+        }
+    }
+}
