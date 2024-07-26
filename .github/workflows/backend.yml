@@ -8,24 +8,50 @@ on:
   
   workflow_dispatch:
 
+env:
+  AZURE_FUNCTIONAPP_NAME: 'VisitFunc'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend'
+  PYTHON_VERSION: '3.11'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: 'Resolve Project Dependencies Using Pip'
+        shell: bash
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+            pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+            pip install azure-functions
+            pip install azure-cosmos
+            pip install pytest
+            popd
+    
+      - name: Run Unit Test
+        shell: bash
+        run: |
+            pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{env.AZURE_FUNCTIONAPP_NAME}}'
+            pytest -v -s
+    
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+            app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+            package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{env.AZURE_FUNCTIONAPP_NAME}}'
+            publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+            scm-do-build-during-deployment: true
+            enable-oryx-build: true
+      
