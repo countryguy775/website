@@ -79,6 +79,7 @@ jobs:
           uses: azure/login@v2
           with:
             creds: ${{secrets.AZURE_CREDENTIALS}}
+            enable-AzPSSession: true
 
         - name: Create DB
           uses: azure/arm-deploy@v2
@@ -90,11 +91,12 @@ jobs:
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
         - name: Get DocumentEndpoint
-          uses: azure/CLI@v1
+          uses: azure/powershell@v2
           id: dep
           with:
             inlineScript: |
-              $docEndpoint = $(az cosmosdb show --subscription '8c28f21f-c2cf-4bc5-aa3e-cfef9ffea106' --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint --output tsv)
+              $docEndpoint = (Get-AZCosmosDBAccount -ResourceGroupName ${{needs.create_rg.outputs.rgName}} -Name ${{steps.db.outputs.dbName}}).DocumentEndpoint
+            azPSVersion: "latest"
 
     create-cdn:
         runs-on: ubuntu-latest
