@@ -182,3 +182,13 @@ jobs:
                 $customDomainHttpsParameter = New-AzCdnManagedHttpsParametersObject -CertificateSourceParameterCertificateType Dedicated -CertificateSource Cdn -ProtocolType ServerNameIndication
                 Enable-AzCdnCustomDomainCustomHttps -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -ProfileName ${{needs.create-cdn.outputs.profileName}} -EndpointName ${{env.appName}} -CustomDomainName ${{needs.create-cdn.outputs.customDomainName}} -CustomDomainHttpsParameter $customDomainHttpsParameter
             azPSVersion: "latest"
+
+    output-vars:
+      runs-on: ubuntu-latest
+      needs: [create-rg]
+      steps:
+        - uses: actions/checkout@v4
+        - run: |
+              gh variable list
+              gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
+              gh variable list
