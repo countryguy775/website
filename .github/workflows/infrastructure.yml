@@ -90,11 +90,11 @@ jobs:
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
         - name: Get DocumentEndpoint
-          uses: azure/CLI@v2
+          uses: azure/CLI@v1
           id: dep
           with:
             inlineScript: |
-              $docEndpoint = az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint
+              az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint
 
     create-cdn:
         runs-on: ubuntu-latest
