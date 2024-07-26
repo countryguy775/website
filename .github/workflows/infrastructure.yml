@@ -97,7 +97,7 @@ jobs:
           with:
             inlineScript: |
               $dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey
-              Write-Output "dbKey=$($dbKey)" >> GITHUB_OUTPUT
+              Write-Output "dbKey=$($dbKey)" >> $GITHUB_OUTPUT
             azPSVersion: "latest"
 
     create-cdn:
