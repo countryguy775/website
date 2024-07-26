@@ -95,8 +95,8 @@ jobs:
         - name: Get DB Connection
           id: dep
           run: |
-            echo dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey >> $env:GITHUB_OUTPUT
-          shell: pwsh
+            $dbKey = az cosmosdb keys list --name familywebsitedevdb --resource-group 'familywebsite-dev-rg' --subscription '8c28f21f-c2cf-4bc5-aa3e-cfef9ffea106' --type connection-strings --query 'connectionStrings[0].connectionString' --output tsv
+            echo "##vso[task.setvariable variable=connectionString;isOutput=true]$dbKey"
 
     create-cdn:
         runs-on: ubuntu-latest
