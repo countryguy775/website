@@ -190,7 +190,7 @@ jobs:
         - uses: actions/checkout@v4
         - run: |
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
-              gh variable set storageName --body $${{needs.create-storage.outputs.storageName}}
+              gh variable set storageName --body ${{needs.create-storage.outputs.storageName}}
               gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
               
           env:
