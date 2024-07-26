@@ -71,7 +71,7 @@ jobs:
         outputs:
           dbName: ${{steps.db.outputs.dbName}}
           docEndpoint: ${{steps.db.outputs.endpoint}}
-          dbKey: ${{steps.dep.outputs.dbKey}}
+          dbKey: ${{steps.db.outputs.dbKey}}
         needs: create-rg
         steps:
         - name: Checkout repository
