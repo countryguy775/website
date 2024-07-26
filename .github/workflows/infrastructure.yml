@@ -69,7 +69,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
           dbName: ${{steps.db.outputs.dbName}}
-          docEndpoint: ${{steps.dep.outputs.docEndpoint}}
+          docEndpoint: ${{steps.db.outputs.endpoint}}
         needs: create-rg
         steps:
         - name: Checkout repository
@@ -90,14 +90,7 @@ jobs:
             template: ./infrastructure/create_db.json
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
-        - name: Get DocumentEndpoint
-          uses: azure/powershell@v2
-          id: dep
-          with:
-            inlineScript: |
-              $docEndpoint = (Get-AZCosmosDBAccount -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{steps.db.outputs.dbName}}).DocumentEndpoint
-              write-host $docEndpoint
-            azPSVersion: "latest"
+        
 
     create-cdn:
         runs-on: ubuntu-latest

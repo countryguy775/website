@@ -117,6 +117,10 @@
         "dbName": {
             "type": "string",
             "value": "[variables('fulldbName')]"
+        },
+        "endpoint": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))).DocumentEndpoint]"
         }
     }
 }
