@@ -95,7 +95,7 @@ jobs:
           id: dep
           with:
             inlineScript: |
-              $docEndpoint = (Get-AZCosmosDBAccount -ResourceGroupName ${{needs.create_rg.outputs.rgName}} -Name ${{steps.db.outputs.dbName}}).DocumentEndpoint
+              $docEndpoint = (Get-AZCosmosDBAccount -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{steps.db.outputs.dbName}}).DocumentEndpoint
             azPSVersion: "latest"
 
     create-cdn:
