@@ -192,3 +192,5 @@ jobs:
               gh variable list
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
               gh variable list
+          env:
+            GITHUB_TOKEN: ${{secrets.PAT}}
