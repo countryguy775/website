@@ -94,7 +94,7 @@ jobs:
         - name: Get DB Connection
           id: dep
           run: |
-            echo dbKey = (az cosmosdb keys list --resource-group 'familywebsite-dev-rg' --name 'familywebsitedevdb' --query documentEndpoint --output tsv) >> $GITHUB_OUTPUT
+            echo dbKey = $(az cosmosdb keys list --resource-group 'familywebsite-dev-rg' --name 'familywebsitedevdb' --query documentEndpoint --output tsv) >> $GITHUB_OUTPUT
 
     create-cdn:
         runs-on: ubuntu-latest
