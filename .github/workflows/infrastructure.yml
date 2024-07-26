@@ -15,6 +15,7 @@ env:
     indexDocument: 'index.html'
     errorDocument404Path: 'error.html'
     
+
 jobs:
     create-rg:
         runs-on: ubuntu-latest
@@ -94,7 +95,8 @@ jobs:
         - name: Get DB Connection
           id: dep
           run: |
-            echo "dbKey = $(az cosmosdb keys list --resource-group 'familywebsite-dev-rg' --name 'familywebsitedevdb' --query documentEndpoint --output tsv)" >> $GITHUB_OUTPUT
+            echo dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey >> $env:GITHUB_OUTPUT
+          shell: pwsh
 
     create-cdn:
         runs-on: ubuntu-latest
