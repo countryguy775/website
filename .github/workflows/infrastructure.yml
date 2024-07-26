@@ -96,6 +96,7 @@ jobs:
           with:
             inlineScript: |
               $docEndpoint = (Get-AZCosmosDBAccount -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{steps.db.outputs.dbName}}).DocumentEndpoint
+              write-host $docEndpoint
             azPSVersion: "latest"
 
     create-cdn:
