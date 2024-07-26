@@ -25,11 +25,10 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            $rgName = (az group list).name
-            az storage blob upload-batch --account-name familywebsitedevstorage --auth-mode key -d '$web' -s ./frontend --overwrite
+            az storage blob upload-batch --account-name ${{vars.storageName}} --auth-mode key -d '$web' -s ./frontend --overwrite
 
       - name: Purge CDN
         uses: azure/CLI@v1
         with:
           inlineScript: |
-           az cdn endpoint purge --content-paths  "/*" --profile-name "familywebsite-dev-cdn" --name "familywebsite" --resource-group "familywebsite-dev-rg"
+           az cdn endpoint purge --content-paths  "/*" --profile-name ${{vars.profileName}} --name "familywebsite" --resource-group ${{vars.rgName}}
