@@ -92,13 +92,12 @@ jobs:
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
         - name: Get DB Connection
-          uses: azure/powershell@v2
           id: dep
+          uses: azure/CLI@v1
           with:
             inlineScript: |
-              $dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey
-              Write-Output "dbKey=$($dbKey)" >> $GITHUB_OUTPUT
-            azPSVersion: "latest"
+              $dbKey = $(az cosmosdb keys list --name 'familywebsitedevdb' --resource-group 'familywebsite-dev-rg' --type connection-strings --query 'connectionStrings[0].connectionString' --output tsv)
+              echo "##vso[task.setvariable variable=connectionString;isOutput=true]$dbKey"
 
     create-cdn:
         runs-on: ubuntu-latest
