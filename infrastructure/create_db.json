@@ -116,7 +116,7 @@
     "outputs": {
         "dbName": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName')))]"
+            "value": "[variables('fulldbName')]"
         }
     }
 }
