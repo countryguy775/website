@@ -32,3 +32,8 @@ jobs:
         with:
           inlineScript: |
            az cdn endpoint purge --content-paths  "/*" --profile-name ${{vars.profileName}} --name "familywebsite" --resource-group ${{vars.rgName}}
+
+      - name: AZ Logout
+        run: |
+          az logout
+        if: always()
