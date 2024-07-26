@@ -94,7 +94,7 @@ jobs:
           id: dep
           with:
             inlineScript: |
-              docEndpoint = $(az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint --output tsv)
+              $docEndpoint = $(az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint --output tsv)
 
     create-cdn:
         runs-on: ubuntu-latest
