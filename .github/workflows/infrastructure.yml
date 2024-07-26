@@ -94,7 +94,7 @@ jobs:
           id: dep
           with:
             inlineScript: |
-              az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint
+              $docEndpoint = az cosmosdb show --resource-group ${{needs.create-rg.outputs.rgName}} --name ${{steps.db.outputs.dbName}} --query documentEndpoint
 
     create-cdn:
         runs-on: ubuntu-latest
