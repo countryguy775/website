@@ -123,7 +123,7 @@
             "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))).DocumentEndpoint]"
         },
         "dbKey": {
-            "type": "string",
+            "type": "securestring",
             "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))).primaryMasterKey]"
         }
     }
