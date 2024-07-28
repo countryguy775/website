@@ -121,10 +121,6 @@
         "endpoint": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))).DocumentEndpoint]"
-        },
-        "dbKey": {
-            "type": "securestring",
-            "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('fulldbName'))).primaryMasterKey]"
         }
     }
 }
