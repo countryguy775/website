@@ -91,6 +91,13 @@ jobs:
             template: ./infrastructure/create_db.json
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
+        - name: dbKey
+          uses: azure/powershell@v2
+          with:
+            inlineScript: |
+                az keyvault secret set --vault-name 'prod-kv-mlh' --name 'dbKey' --value '(Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey'
+            azPSVersion: "latest"
+
         
 
     create-cdn:
@@ -201,8 +208,6 @@ jobs:
               gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
               gh variable set docEndpoint --body ${{needs.create-db.outputs.docEndpoint}}
               
-              $dbKey = listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName')), '2019-08-01').primaryMasterKey
-              gh secret set dbKey --body ${{needs.create-db.outputs.dbKey}}
 
           env:
             GITHUB_TOKEN: ${{secrets.PAT}}
