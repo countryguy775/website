@@ -95,7 +95,8 @@ jobs:
           uses: azure/powershell@v2
           with:
             inlineScript: |
-                az keyvault secret set --vault-name 'prod-kv-mlh' --name 'dbKey' --value '(Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey'
+                $dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey
+                az keyvault secret set --vault-name 'prod-kv-mlh' --name 'dbKey' --value '$dbKey'
             azPSVersion: "latest"
 
         
