@@ -225,7 +225,7 @@ jobs:
           with:
             azcliversion: latest
             inlineScript: |
-              $pubProfile = az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}}
+              $pubProfile = $(az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}})
 
 
         - uses: actions/checkout@v4
