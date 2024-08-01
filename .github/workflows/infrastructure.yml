@@ -91,14 +91,6 @@ jobs:
             template: ./infrastructure/create_db.json
             parameters: appName=${{env.appName}} environment=${{env.environ}}
 
-        - name: dbKey
-          uses: azure/powershell@v2
-          with:
-            inlineScript: |
-                $dbKey = (Get-AzCosmosDBAccountKey -ResourceGroupName 'familywebsite-dev-rg' -Name familywebsitedevdb).PrimaryMasterKey
-                az keyvault secret set --vault-name 'prod-kv-mlh' --name 'dbKey' --value '$dbKey'
-            azPSVersion: "latest"
-
     create-app:
       runs-on: ubuntu-latest
       needs: [create-rg,create-storage,create-db]
@@ -117,7 +109,7 @@ jobs:
           with:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
-            template: ./create_app.json
+            template: ./infrastructure/create_app.json
             parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}}   
 
     create-cdn:
