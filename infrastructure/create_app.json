@@ -1,0 +1,74 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "type": "string"
+        },
+        "serviceplanName": {
+            "type": "string",
+            "defaultValue": "VisitApp"
+        },
+        "storageName": {
+            "type": "string"
+        },
+        "endpoint": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "fullplanName": "[concat(parameters('serviceplanName'), '-', parameters('environment'), '-ASP')]"
+    },
+    "resources": [
+        
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('serviceplanName'), '-', parameters('environment'))]",
+            "location": "[resourceGroup().location]",
+            "kind": "functionapp,linux",
+            "properties": {
+                "reserved": true,
+                "siteConfig": {
+                    "linuxFxVersion": "python|3.11",
+                    "appSettings": [
+                        {
+                            "name": "COSMOS_ENDPOINT",
+                            "value": "[parameters('endpoint')]"
+                        },
+                        {
+                            "name": "COSMOS_KEY",
+                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2021-09-01').keys[0].value]"
+                        },
+                        {
+                        "name": "AzureWebJobsStorage",
+                        "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2022-05-01').keys[0].value)]"
+                        },
+                        {
+                        "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                        "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2022-05-01').keys[0].value)]"
+                        },
+                        {
+                        "name": "WEBSITE_CONTENTSHARE",
+                        "value": "[toLower(concat(parameters('serviceplanName'), '-', parameters('environment')))]"
+                        },
+                        {
+                        "name": "FUNCTIONS_EXTENSION_VERSION",
+                        "value": "~4"
+                        },
+                        {
+                        "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                        "value": "~14"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "appName": {
+            "type": "string",
+            "value": "[concat(parameters('serviceplanName'),'-',parameters('environment'))]"
+        }
+    }
+}
