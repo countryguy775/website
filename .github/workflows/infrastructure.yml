@@ -94,6 +94,8 @@ jobs:
     create-app:
       runs-on: ubuntu-latest
       needs: [create-rg,create-storage,create-db]
+      outputs:
+        appName: ${{steps.ASP.outputs.appName}}
       steps:
         - name: Checkout repository
           uses: actions/checkout@v4
@@ -211,14 +213,27 @@ jobs:
 
     output-vars:
       runs-on: ubuntu-latest
-      needs: [create-rg,create-storage,create-db,create-cdn]
+      needs: [create-rg,create-storage,create-db,create-cdn,create-app]
       steps:
+        - uses: actions/checkout@v4
+        - uses: azure/login@v2
+          with:
+            creds: ${{secrets.AZURE_CREDENTIALS}}
+
+        - uses: azure/cli@v2
+          id: pprof
+          with:
+            azcliversion: latest
+            inlineScript: |
+              $pubProfile = az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}}
+
+
         - uses: actions/checkout@v4
         - run: |
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
               gh variable set storageName --body ${{needs.create-storage.outputs.storageName}}
               gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
-              gh variable set docEndpoint --body ${{needs.create-db.outputs.docEndpoint}}
+              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{steps.pprof.outputs.pubProfile}}
               
 
           env:
