@@ -228,7 +228,7 @@ jobs:
             azPSVersion: "latest"
             inlineScript: |
               $pubProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{needs.create-app.outputs.appName}}
-              echo "pubProfile=$pubProfile" >> $env.GITHUB_ENV
+              Add-Content -Path $env:GITHUB_ENV -Value "name=$pubProfile"
               
 
         - uses: actions/checkout@v4
