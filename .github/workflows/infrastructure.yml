@@ -90,7 +90,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_db.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}} tableName=${{env.tableName}} containerName:${{env.containerName}}
+            parameters: appName=${{env.appName}} environment=${{env.environ}} tableName=${{env.tableName}} containerName=${{env.containerName}}
 
     create-app:
       runs-on: ubuntu-latest
