@@ -16,9 +16,6 @@
             "type": "string"
         }
     },
-    "variables": {
-        "fullplanName": "[concat(parameters('serviceplanName'), '-', parameters('environment'), '-ASP')]"
-    },
     "resources": [
         
         {

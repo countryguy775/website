@@ -21,7 +21,6 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             rgName: ${{ steps.rg.outputs.rgName }}
-            actualAppName: ${{steps.rg.outputs.actualAppName}}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -31,7 +30,6 @@ jobs:
               with:
                 creds: '${{ secrets.AZURE_CREDENTIALS }}'
                 
-            
             - name: Create rg
               id: rg
               uses: azure/arm-deploy@v2
@@ -227,7 +225,7 @@ jobs:
             azPSVersion: "latest"
             inlineScript: |
               $pubProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{needs.create-app.outputs.appName}}
-
+              echo "pubProfile=$pubProfile" >> "$GITHUB_OUTPUT"
 
         - uses: actions/checkout@v4
         - run: |
