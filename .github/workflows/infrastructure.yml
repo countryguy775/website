@@ -222,20 +222,20 @@ jobs:
             creds: ${{secrets.AZURE_CREDENTIALS}}
             enable-AzPSSession: true
 
-        - uses: azure/powershell@v2
-          id: pprof
+        
+        - uses: azure/cli@v2
+          id: pprof2
           with:
-            azPSVersion: "latest"
+            azcliversion: latest
             inlineScript: |
-              $pubProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{needs.create-app.outputs.appName}}
-              Add-Content -Path $env:GITHUB_ENV -Value "name=$pubProfile"
-              
+              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}}
+
 
         - uses: actions/checkout@v4
         - run: |
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
               gh variable set storageName --body ${{needs.create-storage.outputs.storageName}}
-              gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
+              
               gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{env.pubProfile}}
               
 
