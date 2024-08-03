@@ -226,3 +226,9 @@ jobs:
           id: gpp
           run: |
             echo "pubProfile=$(az webapp deployment list-publishing-profiles -g ${{needs.create-rg.outputs.rgName}} -n ${{needs.create-app.outputs.appName}} --xml)" >> $GITHUB_OUTPUT
+
+        - uses: actions/checkout@v4
+        - run: |
+              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{steps.gpp.outputs.pubProfile}}
+          env:
+            GITHUB_TOKEN: ${{secrets.PAT}}
