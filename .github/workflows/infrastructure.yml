@@ -14,6 +14,9 @@ env:
     domainName: 'thehodgesfamily.net'
     indexDocument: 'index.html'
     errorDocument404Path: 'error.html'
+    funcAppName: 'VisitApp'
+    tableName: 'VisitCount'
+    containerName: 'Visits'
     
 
 jobs:
@@ -87,7 +90,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_db.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}}
+            parameters: appName=${{env.appName}} environment=${{env.environ}} tableName=${{env.tableName}} containerName:${{env.containerName}}
 
     create-app:
       runs-on: ubuntu-latest
@@ -110,7 +113,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_app.json
-            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}}   
+            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} serviceplanName=${{env.funcAppName}}
 
     create-cdn:
         runs-on: ubuntu-latest
@@ -225,14 +228,15 @@ jobs:
             azPSVersion: "latest"
             inlineScript: |
               $pubProfile = Get-AzWebAppPublishingProfile -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -Name ${{needs.create-app.outputs.appName}}
-              echo "pubProfile=$pubProfile" >> "$GITHUB_OUTPUT"
+              echo "pubProfile=$pubProfile" >> $env.GITHUB_ENV
+              
 
         - uses: actions/checkout@v4
         - run: |
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
               gh variable set storageName --body ${{needs.create-storage.outputs.storageName}}
               gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
-              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{steps.pprof.outputs.pubProfile}}
+              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{env.pubProfile}}
               
 
           env:

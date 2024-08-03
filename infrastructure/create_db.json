@@ -9,12 +9,10 @@
             "type": "string"
         },
         "tableName": {
-            "type": "string",
-            "defaultValue": "VisitCount"
+            "type": "string"
         },
         "containerName": {
-            "type": "string",
-            "defaultValue": "Visits"
+            "type": "string"
         }
     },
     "variables": {

@@ -6,8 +6,7 @@
             "type": "string"
         },
         "serviceplanName": {
-            "type": "string",
-            "defaultValue": "VisitApp"
+            "type": "string"
         },
         "storageName": {
             "type": "string"
