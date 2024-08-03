@@ -225,5 +225,4 @@ jobs:
         - name: Get Publishing Profile
           id: gpp
           run: |
-            echo "::set-output name=PUBLISH_PROFILE::$(az webapp deployment list-publishing-profiles -g ${{needs.create-rg.outputs.rgName}} -n ${{needs.create-app.outputs.appName}} --xml)"
-        
+            echo "pubProfile=$(az webapp deployment list-publishing-profiles -g ${{needs.create-rg.outputs.rgName}} -n ${{needs.create-app.outputs.appName}} --xml)" >> $GITHUB_OUTPUT
