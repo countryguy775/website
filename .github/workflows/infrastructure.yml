@@ -222,13 +222,8 @@ jobs:
             creds: ${{secrets.AZURE_CREDENTIALS}}
             enable-AzPSSession: true
 
-        
-        - uses: azure/cli@v2
-          id: pprof2
-          with:
-            azcliversion: latest
-            inlineScript: |
-              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}} --resource-group ${{needs.create-rg.outputs.rgName}}
-
-
+        - name: Get Publishing Profile
+          id: gpp
+          run: |
+            echo "::set-output name=PUBLISH_PROFILE::$(az webapp deployment list-publishing-profiles -g ${{needs.create-rg.outputs.rgName}} -n ${{needs.create-app.outputs.appName}} --xml)"
         
