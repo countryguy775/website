@@ -228,15 +228,7 @@ jobs:
           with:
             azcliversion: latest
             inlineScript: |
-              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}} -format ZipDeploy
+              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}} --resource-group ${{needs.create-rg.outputs.rgName}} --format webdeploy
 
 
-        - uses: actions/checkout@v4
-        - run: |
-              
-              
-              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body ${{env.pubProfile}}
-              
-
-          env:
-            GITHUB_TOKEN: ${{secrets.PAT}}
+        
