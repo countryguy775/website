@@ -228,7 +228,7 @@ jobs:
           with:
             azcliversion: latest
             inlineScript: |
-              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}}
+              az functionapp deployment list-publishing-profiles --name ${{needs.create-app.outputs.appName}}   --resource-group ${{needs.create-rg.outputs.rgName}} -format ZipDeploy
 
 
         - uses: actions/checkout@v4
