@@ -42,7 +42,7 @@ jobs:
       
     
       - name: 'Run Azure Functions Action'
-        uses: Azure/webapps-deploy@v2
+        uses: Azure/webapps-deploy@v3
         id: fa
         with:
             app-name: 'VisitApp-dev'
