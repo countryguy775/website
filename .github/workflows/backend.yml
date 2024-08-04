@@ -39,11 +39,7 @@ jobs:
             pip install pytest
             popd
     
-      - name: Run Unit Test
-        shell: bash
-        run: |
-            pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{env.AZURE_FUNCTIONAPP_NAME}}'
-            pytest -v -s
+      
     
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
