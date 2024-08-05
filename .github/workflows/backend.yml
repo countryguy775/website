@@ -34,18 +34,22 @@ jobs:
             pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
             python -m pip install --upgrade pip
             pip install -r requirements.txt --target=".python_packages/lib/site-packages"
-            pip install azure-functions
+            
             pip install azure-cosmos
             pip install pytest
             popd
     
       
-      - name: Deploy
-        shell: bash
-        run: |
-          az functionapp create --name VisitFunc --storage-account ${{vars.storageName}} --consumption-plan-location eastus --resource-group ${{vars.rgName}} --deployment-source-url 'https://github.com/countryguy775/website' --deployment-source-branch main --functions-version 4 --runtime python --runtime-version '3.11' --os-type linux
-
-
+      
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+            app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+            package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+            publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+            scm-do-build-during-deployment: true
+            enable-oryx-build: true
       
             
             
