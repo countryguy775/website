@@ -14,7 +14,7 @@ env:
     domainName: 'thehodgesfamily.net'
     indexDocument: 'index.html'
     errorDocument404Path: 'error.html'
-    funcAppName: 'VisitApp'
+    funcAppName: 'VisitFunc'
     tableName: 'VisitCount'
     containerName: 'Visits'
     
@@ -113,7 +113,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_app.json
-            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} serviceplanName=${{env.funcAppName}}
+            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{env.funcAppName}}
 
     create-cdn:
         runs-on: ubuntu-latest
