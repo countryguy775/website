@@ -43,7 +43,7 @@ jobs:
       - name: Deploy
         shell: bash
         run: |
-          az functionapp create --name "VisitFunc" --storage-account ${{vars.storageName}} --consumption-plan-location "eastus" --resource-group ${{vars.rgName}} --deployment-source-url 'https://github.com/countryguy775/website.git' --deployment-source-branch main --functions-version "4" --runtime "node"
+          az functionapp create --name "VisitFunc" --storage-account ${{vars.storageName}} --consumption-plan-location "eastus" --resource-group ${{vars.rgName}} --deployment-source-url 'https://github.com/countryguy775/website' --deployment-source-branch main --functions-version "4" --runtime "node"
 
 
       
