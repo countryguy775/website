@@ -3,7 +3,7 @@ import os
 import azure.functions as func
 from azure.cosmos import CosmosClient
 
-#fake commit
+
 # Cosmos DB connection global vars
 endpoint = os.environ["COSMOS_ENDPOINT"]
 account_key = os.environ["COSMOS_KEY"]
