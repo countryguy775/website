@@ -9,7 +9,7 @@ on:
 
 env:
     location: eastus
-    appName: familywebsite
+    
     environ: dev
     domainName: 'thehodgesfamily.net'
     indexDocument: 'index.html'
@@ -41,7 +41,7 @@ jobs:
                  subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
                  region: ${{ env.location }}
                  template: ./infrastructure/create_rg.json
-                 parameters: appName=${{env.appName}} environment=${{env.environ}} location=${{env.location}}
+                 parameters: appName=${{vars.appName}} environment=${{env.environ}} location=${{env.location}}
 
     create-storage:
         runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{ needs.create-rg.outputs.rgName }}
             template: ./infrastructure/create_storage.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}}
+            parameters: appName=${{vars.appName}} environment=${{env.environ}}
 
     create-db:
         runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_db.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}} tableName=${{env.tableName}} containerName=${{env.containerName}}
+            parameters: appName=${{vars.appName}} environment=${{env.environ}} tableName=${{env.tableName}} containerName=${{env.containerName}}
 
     create-app:
       runs-on: ubuntu-latest
@@ -138,7 +138,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_cdn.json
-            parameters: appName=${{env.appName}} environment=${{env.environ}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
+            parameters: appName=${{vars.appName}} environment=${{env.environ}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
 
     deploy-dns:
         runs-on: ubuntu-latest
@@ -185,7 +185,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_customdomain.json
-            parameters: profileName=${{needs.create-cdn.outputs.profileName}} appName=${{env.appName}} customHostName=${{needs.create-cdn.outputs.customDomainName}}
+            parameters: profileName=${{needs.create-cdn.outputs.profileName}} appName=${{vars.appName}} customHostName=${{needs.create-cdn.outputs.customDomainName}}
 
     enable-staticweb:
         runs-on: ubuntu-latest
@@ -209,7 +209,7 @@ jobs:
                 $ctx = $storageAccount.Context
                 Enable-AzStorageStaticWebsite -Context $ctx -IndexDocument $env:indexDocument -ErrorDocument404Path $env:errorDocument404Path
                 $customDomainHttpsParameter = New-AzCdnManagedHttpsParametersObject -CertificateSourceParameterCertificateType Dedicated -CertificateSource Cdn -ProtocolType ServerNameIndication
-                Enable-AzCdnCustomDomainCustomHttps -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -ProfileName ${{needs.create-cdn.outputs.profileName}} -EndpointName ${{env.appName}} -CustomDomainName ${{needs.create-cdn.outputs.customDomainName}} -CustomDomainHttpsParameter $customDomainHttpsParameter
+                Enable-AzCdnCustomDomainCustomHttps -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -ProfileName ${{needs.create-cdn.outputs.profileName}} -EndpointName ${{vars.appName}} -CustomDomainName ${{needs.create-cdn.outputs.customDomainName}} -CustomDomainHttpsParameter $customDomainHttpsParameter
             azPSVersion: "latest"
 
     output-vars:
