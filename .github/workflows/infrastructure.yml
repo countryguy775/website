@@ -9,12 +9,8 @@ on:
 
 env:
     location: eastus
-    
     environ: dev
-    domainName: 'thehodgesfamily.net'
-    indexDocument: 'index.html'
-    errorDocument404Path: 'error.html'
-    funcAppName: 'VisitFunc'
+    
     tableName: 'VisitCount'
     containerName: 'Visits'
     
@@ -113,7 +109,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_app.json
-            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{env.funcAppName}}
+            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{vars.funcAppName}}
 
     create-cdn:
         runs-on: ubuntu-latest
@@ -138,7 +134,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_cdn.json
-            parameters: appName=${{vars.appName}} environment=${{env.environ}} domainName=${{env.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
+            parameters: appName=${{vars.appName}} environment=${{env.environ}} domainName=${{vars.domainName}} storageWebEndpoint=${{needs.create-storage.outputs.storageWebEndpoint}}
 
     deploy-dns:
         runs-on: ubuntu-latest
@@ -160,10 +156,10 @@ jobs:
             inlineScript: |
                 $ErrorActionPreference = 'Stop'
                 Set-AzContext -Subscription "2f9cc458-4951-43a4-8231-a7b3c75b5473"
-                $rs = Get-AzDnsRecordSet -Name ${{env.environ}} -RecordType CNAME -ZoneName ${{env.domainName}} -ResourceGroupName "core_services"
+                $rs = Get-AzDnsRecordSet -Name ${{env.environ}} -RecordType CNAME -ZoneName ${{vars.domainName}} -ResourceGroupName "core_services"
                 Remove-AzDnsRecordConfig -RecordSet $rs -Cname $rs.Records.cname | Set-AzDnsRecordSet
                 $newcname = '${{needs.create-cdn.outputs.endpointName}}'
-                Get-AzDnsRecordSet -name ${{env.environ}} -RecordType CNAME -ZoneName ${{env.domainName}} -ResourceGroupName "core_services" | Add-AzDnsRecordConfig -Cname $newcname | Set-AzDnsRecordSet
+                Get-AzDnsRecordSet -name ${{env.environ}} -RecordType CNAME -ZoneName ${{vars.domainName}} -ResourceGroupName "core_services" | Add-AzDnsRecordConfig -Cname $newcname | Set-AzDnsRecordSet
             azPSVersion: "latest"
 
     create-customdomain:
@@ -207,7 +203,7 @@ jobs:
                 $ErrorActionPreference = 'Stop'
                 $storageAccount = Get-AzStorageAccount -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -AccountName ${{needs.create-storage.outputs.storageName}}
                 $ctx = $storageAccount.Context
-                Enable-AzStorageStaticWebsite -Context $ctx -IndexDocument $env:indexDocument -ErrorDocument404Path $env:errorDocument404Path
+                Enable-AzStorageStaticWebsite -Context $ctx -IndexDocument ${{vars.indexDocument}} -ErrorDocument404Path ${{vars.errorDocument404Path}}
                 $customDomainHttpsParameter = New-AzCdnManagedHttpsParametersObject -CertificateSourceParameterCertificateType Dedicated -CertificateSource Cdn -ProtocolType ServerNameIndication
                 Enable-AzCdnCustomDomainCustomHttps -ResourceGroupName ${{needs.create-rg.outputs.rgName}} -ProfileName ${{needs.create-cdn.outputs.profileName}} -EndpointName ${{vars.appName}} -CustomDomainName ${{needs.create-cdn.outputs.customDomainName}} -CustomDomainHttpsParameter $customDomainHttpsParameter
             azPSVersion: "latest"
