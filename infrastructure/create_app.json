@@ -43,7 +43,7 @@
                         },
                         {
                             "name": "COSMOS_KEY",
-                            "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('dbName')), '2023-04-15').keys[0].value]"
+                            "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('dbName')), '2023-04-15').primaryMasterKey.value]"
                         },
                         {
                         "name": "AzureWebJobsStorage",
