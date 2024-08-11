@@ -8,7 +8,7 @@ on:
     workflow_dispatch:
 
 env:
-    location: eastus
+    location: westus
     environ: dev
     
     tableName: 'VisitCount'
