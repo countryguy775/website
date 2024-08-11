@@ -109,7 +109,7 @@ jobs:
             scope: resourcegroup
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_app.json
-            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{vars.funcAppName}}
+            parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{vars.funcAppName}} dbName=${{needs.create-db.outputs.dbName}}
 
     create-cdn:
         runs-on: ubuntu-latest
