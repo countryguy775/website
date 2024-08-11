@@ -29,8 +29,7 @@
                     "linuxFxVersion": "python|3.11",
                     "cors": {
                         "allowedOrigins": [
-                            "https://thehodgesfamily.net",
-                            "https://*.thehodgesfamily.net"
+                            "[concat('https://', parameters('environment'), '.thehodgesfamily.net')]"
                         ],
                         "supportCredentials": true
                     },
@@ -63,6 +62,10 @@
                         {
                             "name": "AzureWebJobsFeatureFlags",
                             "value": "EnableWorkerIndexing"
+                        },
+                        {
+                            "name": "WEBSITE_WEBDEPLOY_USE_SCM",
+                            "value": "true"
                         }
                     ]
                 }
