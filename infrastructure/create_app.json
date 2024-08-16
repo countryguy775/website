@@ -69,6 +69,10 @@
                         {
                             "name": "WEBSITE_WEBDEPLOY_USE_SCM",
                             "value": "true"
+                        },
+                        {
+                            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                            "value": "true"
                         }
                     ]
                 }
