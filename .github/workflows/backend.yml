@@ -42,7 +42,7 @@ jobs:
       - uses: azure/webapps-deploy@v2
         with:
             app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-            package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+            package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/VisitFunc'
             startup-command: ${{ env.STARTUP_COMMAND }}
       
       
