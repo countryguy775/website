@@ -65,10 +65,6 @@
                         {
                             "name": "WEBSITE_WEBDEPLOY_USE_SCM",
                             "value": "true"
-                        },
-                        {
-                            "name": "WEBSITE_RUN_FROM_PACKAGE",
-                            "value": "1"
                         }
                     ]
                 }
