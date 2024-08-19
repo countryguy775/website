@@ -10,7 +10,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'VisitFunc'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './backend/VisitFunc'
   PYTHON_VERSION: '3.11'
   WORKING_DIRECTORY: './backend'
   STARTUP_COMMAND: ''
@@ -42,7 +42,7 @@ jobs:
       - uses: azure/webapps-deploy@v2
         with:
             app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-            package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/VisitFunc'
+            package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
             startup-command: ${{ env.STARTUP_COMMAND }}
       
       
