@@ -10,9 +10,9 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'VisitFunc'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './backend'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './backend/VisitFunc'
   PYTHON_VERSION: '3.11'
-  WORKING_DIRECTORY: './backend'
+  WORKING_DIRECTORY: './backend/VisitFunc'
   STARTUP_COMMAND: ''
 
 jobs:
