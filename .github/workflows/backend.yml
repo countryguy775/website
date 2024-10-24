@@ -2,12 +2,14 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure Functions: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python project to Azure Function App - visitfunc
+name: Backend Deployment
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'infrastructure/**'
   workflow_dispatch:
 
 env:
@@ -37,7 +39,7 @@ jobs:
       # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip release.zip ./backend/* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -74,8 +76,8 @@ jobs:
         uses: Azure/functions-action@v1
         id: deploy-to-function
         with:
-          app-name: 'visitfunc'
-          slot-name: 'production'
+          app-name: 'VisitFunc'
+          
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           scm-do-build-during-deployment: true
           enable-oryx-build: true
