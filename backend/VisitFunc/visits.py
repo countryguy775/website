@@ -11,7 +11,7 @@ account_key = os.environ["COSMOS_KEY"]
 client = CosmosClient(url=endpoint, credential=account_key)
 database_name = "VisitCount"
 container_name = "Visits"
-item_id = "resumecount"
+id = "resumecount"
 partitionKey = "mhresume"
 
 database = client.get_database_client(database_name)
@@ -20,7 +20,7 @@ container = database.get_container_client(container_name)
 def count_updater(req: func.HttpRequest) -> func.HttpResponse:
     
     # Retrieve the current count item
-    count_item = container.read_item(item_id, partitionKey)
+    count_item = container.read_item(id, partitionKey)
 
 
     # Validate the required parameters
