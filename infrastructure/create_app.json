@@ -57,6 +57,10 @@
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "python"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2022-05-01').keys[0].value)]"
                         }
                     ]
                 }
