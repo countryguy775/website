@@ -18,7 +18,8 @@
             "type": "string"
         },
         "serviceplanname": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "ASP-VisitFunc"
         }
     },
     "resources": [
