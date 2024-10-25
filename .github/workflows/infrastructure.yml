@@ -110,7 +110,7 @@ jobs:
             resourceGroupName: ${{needs.create-rg.outputs.rgName}}
             template: ./infrastructure/create_app.json
             parameters: environment=${{env.environ}} storageName=${{needs.create-storage.outputs.storageName}} endpoint=${{needs.create-db.outputs.docEndpoint}} funcAppName=${{vars.funcAppName}} dbName=${{needs.create-db.outputs.dbName}}
-            
+
     create-cdn:
         runs-on: ubuntu-latest
         needs: [create-rg,create-storage]
@@ -210,7 +210,7 @@ jobs:
 
     output-vars:
       runs-on: ubuntu-latest
-      needs: [create-rg,create-storage,create-db,create-cdn]
+      needs: [create-rg,create-storage,create-db,create-cdn,create-app]
       steps:
         
         - uses: azure/login@v2
@@ -218,12 +218,16 @@ jobs:
             creds: ${{secrets.AZURE_CREDENTIALS}}
             enable-AzPSSession: true
 
-        
+        - name: Get Publishing Profile
+          id: gpp
+          run: |
+            echo "pubProfile=$(az webapp deployment list-publishing-profiles -g ${{needs.create-rg.outputs.rgName}} -n ${{needs.create-app.outputs.appName}} --xml)" >> $GITHUB_OUTPUT
+
         - uses: actions/checkout@v4
         - run: |
               gh variable set rgName --body ${{needs.create-rg.outputs.rgName}}
               gh variable set storageName --body ${{needs.create-storage.outputs.storageName}}
               gh variable set profileName --body ${{needs.create-cdn.outputs.profileName}}
-              
+              gh secret set AZURE_FUNCTIONAPP_PUBLISH_PROFILE --body '${{steps.gpp.outputs.pubProfile}}'
           env:
             GITHUB_TOKEN: ${{secrets.PAT}}

@@ -50,13 +50,13 @@
                             "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('dbName')), '2023-04-15').primaryMasterKey]"
                         },
                         {
-                        "name": "AzureWebJobsStorage",
-                        "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2022-05-01').keys[0].value)]"
+                            "name": "AzureWebJobsStorage",
+                            "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2022-05-01').keys[0].value)]"
                         },
                         
                         {
-                        "name": "FUNCTIONS_EXTENSION_VERSION",
-                        "value": "~4"
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~4"
                         },
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
@@ -69,10 +69,6 @@
                         {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(concat(parameters('serviceplanName'), '-', parameters('environment')))]"
-                        },
-                        {
-                            "name": "WEBSITE_RUN_FROM_PACKAGE",
-                            "value": "0"
                         }
                     ]
                 }
