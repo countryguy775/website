@@ -69,6 +69,10 @@
                         {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(concat(parameters('serviceplanName'), '-', parameters('environment')))]"
+                        },
+                        {
+                            "name": "WEBSITE_RUN_FROM_PACKAGE",
+                            "value": "0"
                         }
                     ]
                 }
